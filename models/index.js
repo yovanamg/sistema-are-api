@@ -3,7 +3,10 @@ const sequelize = require('../db');
 const User = sequelize.define('user', {
   username: Sequelize.STRING,
   password: Sequelize.STRING,
+  rol: Sequelize.STRING,
 });
+User.removeAttribute('createdAt');
+User.removeAttribute('updatedAt');
 
 const Employee = sequelize.define('ldm_empleados_vigentes', {
   numemp: Sequelize.STRING,

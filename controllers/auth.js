@@ -6,23 +6,31 @@ const userService = require('../services/user');
 function login(req, res){
   return authService.authenticate(req.body)
   .then(token => {
+    console.log('------------------------------------');
+    console.log('token');
+    console.log('------------------------------------');
     res.send({
       success: true,
       data: { token }
     });
   })
   .catch(err => {
-    res.send({
-      success: false,
-      message: err.message //not the best error handling.
-      //for better error handling visit github repository, link provided below
-    });
+    console.log('------------------------------------');
+    console.log('token2');
+    console.log('------------------------------------');
+    res.status(404).send('Not found');
+    // res.send({
+    //   success: false,
+    //   status: 404,
+    //   message: err.message //not the best error handling.
+    //   //for better error handling visit github repository, link provided below
+    // });
   })
 };
 
 function register(req, res){
-  var login = req.body.login;
-  return userService.getUserByLogin(req.body.login || '')
+  var username = req.body.username;
+  return userService.getUserByLogin(req.body.username || '')
   .then(exists => {
     if (exists){
       return res.send({
@@ -31,7 +39,7 @@ function register(req, res){
       });
     }
     var user = {
-      login: req.body.login,
+      username: req.body.username,
       password: bcrypt.hashSync(req.body.password, config.saltRounds)
     }
     return userService.addUser(user)

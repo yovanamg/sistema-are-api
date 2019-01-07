@@ -8,19 +8,19 @@ const authenticate = params => {
   console.log('------------------------------------');
   return Users.findOne({
       where: {
-        login: params.login
+        username: params.username
       },
       raw: true
   }).then(user => {
     console.log('------------------------------------');
-    console.log('user', user);
+    console.log('user', !user);
     console.log('------------------------------------');
       if (!user)
           throw new Error('Authentication failed. User not found.');
       if (!bcrypt.compareSync(params.password.trim() || '', user.password.trim()))
           throw new Error('Authentication failed. Wrong password.');
       const payload = {
-          login: user.login,
+          username: user.username,
           id: user.id,
           time: new Date()
       };
@@ -28,7 +28,7 @@ const authenticate = params => {
           expiresIn: config.tokenExpireTime
       });
       return token;
-  });
+  })
 }
 
 module.exports = {
