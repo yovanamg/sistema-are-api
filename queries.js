@@ -50,38 +50,28 @@ const getEmployeeByNumemp = (request, response) => {
 
 const getObjectManager = (request, response) => {
   const numemp = parseInt(request.params.numemp)
-  console.log('------------------------------------');
-  console.log('1');
-  console.log('------------------------------------');
-
-  pool.query('SELECT * FROM ldm_planta WHERE numero_empleado = $1', [numemp], (error, results) => {
+  pool.query('SELECT * FROM ldm_planta WHERE numero_empleado = $1 OR id_planta_jefe = (SELECT p.id_planta FROM ldm_planta p WHERE p.numero_empleado = $1)', [numemp], (error, results) => {
     if (error) {
       throw error
     }
-    response.status(200).json(results.rows)
+    const data = results.rows;
+    const solicitante = [];
+    const array = [];
+    for (var i = 0; i < data.length; i++) {
+      if(data[i].numero_empleado == numemp) {
+        solicitante.push(data[i]);
+      } else {
+        array.push(data[i])
+      }
+    }
+    const information = {
+      solicitante,
+      array,
+    }
+    response.status(200).json(information)
   })
 }
 
-const getIdCoordinators = (request, response) => {
-  console.log('------------------------------------');
-  console.log('request', request);
-  console.log('------------------------------------');
-  console.log('response', response);
-  console.log('------------------------------------');
-  console.log('request.params.id_planta_jefe', request.params);
-  console.log('------------------------------------');
-  const id_planta_jefe = parseInt(request.params.id_planta_jefe);
-  console.log('------------------------------------');
-  console.log('id_planta_jefe', id_planta_jefe);
-  console.log('------------------------------------');
-  
-  pool.query('SELECT * FROM ldm_planta WHERE id_planta_jefe = $1', [id_planta_jefe], (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
-}
 
 // const createUser = (request, response) => {
 //   const { name, email } = request.body
@@ -127,7 +117,6 @@ module.exports = {
   getLineas,
   getEmployeeByNumemp,
   getObjectManager,
-  getIdCoordinators,
 //   getUserById,
 //   createUser,
 //   updateUser,
