@@ -3,18 +3,12 @@ const jwt = require('jsonwebtoken');
 const Users = require('../models').User;
 const config =  require('../config');
 const authenticate = params => {
-  console.log('------------------------------------');
-  console.log('params', params);
-  console.log('------------------------------------');
   return Users.findOne({
       where: {
         username: params.username
       },
       raw: true
   }).then(user => {
-    console.log('------------------------------------');
-    console.log('user', !user);
-    console.log('------------------------------------');
       if (!user)
           throw new Error('Authentication failed. User not found.');
       if (!bcrypt.compareSync(params.password.trim() || '', user.password.trim()))

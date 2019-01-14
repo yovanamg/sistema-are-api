@@ -1,5 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../db');
+const ValeStatics = require('../statics/Vale');
+
 const User = sequelize.define('user', {
   username: Sequelize.STRING,
   password: Sequelize.STRING,
@@ -113,10 +115,31 @@ const Order  = sequelize.define('order', {
 
 User.hasMany(Order, {foreignKey: 'user_id'});
 
+Vale.remoteMethod('generarRecibosMasivos', {
+  http: {
+    verb: 'POST',
+    path: '/recibos-masivos',
+  },
+  accepts: {
+    arg: 'data',
+    type: 'object',
+    http: {
+      source: 'body',
+    },
+  },
+  returns: {
+    type: 'object',
+    root: true,
+  },
+  description: 'Se imprimen recibos de pagos masivos',
+});
+Vale.on('dataSourceAttached', model => ValeStatics(model));
+
 module.exports = {
   User,
   Employee,
   Linea,
   Planta,
-  Order
+  Order,
+  Vale,
 }

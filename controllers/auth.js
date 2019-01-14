@@ -6,25 +6,13 @@ const userService = require('../services/user');
 function login(req, res){
   return authService.authenticate(req.body)
   .then(token => {
-    console.log('------------------------------------');
-    console.log('token');
-    console.log('------------------------------------');
     res.send({
       success: true,
       data: { token }
     });
   })
   .catch(err => {
-    console.log('------------------------------------');
-    console.log('token2');
-    console.log('------------------------------------');
     res.status(404).send('Not found');
-    // res.send({
-    //   success: false,
-    //   status: 404,
-    //   message: err.message //not the best error handling.
-    //   //for better error handling visit github repository, link provided below
-    // });
   })
 };
 

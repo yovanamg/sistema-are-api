@@ -72,6 +72,16 @@ const getObjectManager = (request, response) => {
   })
 }
 
+const getEquipoId = (request, response) => {
+  const solicitudId = parseInt(request.params.solicitudId)
+  pool.query('SELECT * FROM equipos WHERE id = (SELECT equipo_id FROM solicitud_equipo WHERE solicitud_id=$1)', [solicitudId], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
 
 // const createUser = (request, response) => {
 //   const { name, email } = request.body
@@ -117,6 +127,7 @@ module.exports = {
   getLineas,
   getEmployeeByNumemp,
   getObjectManager,
+  getEquipoId,
 //   getUserById,
 //   createUser,
 //   updateUser,
